@@ -1,0 +1,127 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+        http://www.springframework.org/schema/beans     
+        http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context.xsd">
+ 
+ 	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="location" value="/WEB-INF/conf/hts.properties" />
+	</bean>
+ 
+	<bean id="dao" class="net.smartworks.dao.impl.DaoImpl">
+      <property name="dataSource"  ref="dataSource" />  
+    </bean>
+    <bean id="manager" class="net.smartworks.manager.impl.ManagerImpl"/>
+    
+	<bean id="daoFactory" class="net.smartworks.factory.DaoFactory" factory-method="createInstance">
+		<property name="dao" ref="dao"/>
+   	</bean>
+	<bean id="managerFactory" class="net.smartworks.factory.ManagerFactory" factory-method="createInstance">
+		<property name="manager" ref="manager"/>
+   	</bean>
+   	
+	<bean id="propertiesUtil" class="net.smartworks.util.PropertiesUtil" factory-method="createInstance">
+		<property name="mailContentsUrl_Person">
+			<value>${mailContentsUrl_Person}</value>
+		</property>
+		<property name="mailContentsUrl_Leader">
+			<value>${mailContentsUrl_Leader}</value>
+		</property>
+		<property name="serverUrl">
+			<value>${serverUrl}</value>
+		</property>
+		
+		<property name="timeSheetTableName">
+			<value>${timeSheetTableName}</value>
+		</property>
+		<property name="ts_CreateDateColumnName">
+			<value>${ts_CreateDateColumnName}</value>
+		</property>
+		<property name="ts_UserTypeColumnName">
+			<value>${ts_UserTypeColumnName}</value>
+		</property>
+		<property name="ts_DetpColumnName">
+			<value>${ts_DetpColumnName}</value>
+		</property>
+		<property name="ts_UserPositionColumnName">
+			<value>${ts_UserPositionColumnName}</value>
+		</property>
+		<property name="ts_UserNoColumnName">
+			<value>${ts_UserNoColumnName}</value>
+		</property>
+		<property name="ts_UserNameColumnName">
+			<value>${ts_UserNameColumnName}</value>
+		</property>
+		<property name="ts_UserEngNameColumnName">
+			<value>${ts_UserEngNameColumnName}</value>
+		</property>
+		<property name="ts_ProjectColumnName">
+			<value>${ts_ProjectColumnName}</value>
+		</property>
+		<property name="ts_StandardTimeColumnName">
+			<value>${ts_StandardTimeColumnName}</value>
+		</property>
+		<property name="ts_OverTimeColumnName">
+			<value>${ts_OverTimeColumnName}</value>
+		</property>
+		<property name="ts_TotalTimeColumnName">
+			<value>${ts_TotalTimeColumnName}</value>
+		</property>
+		
+		<property name="userTableName">
+			<value>${userTableName}</value>
+		</property>
+		<property name="user_UserIdColumnName">
+			<value>${user_UserIdColumnName}</value>
+		</property>
+		<property name="user_UserNoColumnName">
+			<value>${user_UserNoColumnName}</value>
+		</property>
+		<property name="user_UserTypeColumnName">
+			<value>${user_UserTypeColumnName}</value>
+		</property>
+		<property name="user_UserNameColumnName">
+			<value>${user_UserNameColumnName}</value>
+		</property>
+		<property name="user_UserEngNameColumnName">
+			<value>${user_UserEngNameColumnName}</value>
+		</property>
+		<property name="user_UserDeptColumnName">
+			<value>${user_UserDeptColumnName}</value>
+		</property>
+		<property name="user_UserPositionColumnName">
+			<value>${user_UserPositionColumnName}</value>
+		</property>
+		<property name="user_UserMailAddrColumnName">
+			<value>${user_UserMailAddrColumnName}</value>
+		</property>
+		<property name="user_UserResignColumnName">
+			<value>${user_UserResignColumnName}</value>
+		</property>
+		<property name="user_UserResignDateColumnName">
+			<value>${user_UserResignDateColumnName}</value>
+		</property>
+		
+		<property name="projectCodeTableName">
+			<value>${projectCodeTableName}</value>
+		</property>
+		<property name="prj_CodeColumn">
+			<value>${prj_CodeColumn}</value>
+		</property>
+		<property name="prj_PmColumn">
+			<value>${prj_PmColumn}</value>
+		</property>
+		<property name="prj_SalesColumn">
+			<value>${prj_SalesColumn}</value>
+		</property>
+		<property name="date_Pattern">
+			<value>${date_Pattern}</value>
+		</property>
+		
+	</bean>
+</beans>

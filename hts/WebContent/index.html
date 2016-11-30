@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+
+<link rel="stylesheet" type="text/css" media="screen"
+	href="js/jqueryui/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" media="screen"
+	href="js/jqgrid/css/ui.jqgrid.css" />
+<script type="text/javascript" src="js/jqgrid/js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/jqueryui/jquery-ui.js"></script>
+<script type="text/javascript" src="js/jqgrid/js/jquery.jqGrid.min.js"></script>
+
+<script type="text/javascript"> 
+
+function defaultValue(cellvalue, options, rowObject) {
+
+	if(cellvalue == undefined || cellvalue == "" || cellvalue == "null") {
+   		return "0";
+	} else {
+		return cellvalue;
+	}
+}
+
+function setDefaultOption() {
+	
+	var url = '/hts/getDefaultSelectOptionForJqgrid.sw';
+	var params = {};
+	
+	$.ajax({  
+        type:"POST",  
+        url:url,  
+        dataType:'json',
+        data:JSON.stringify(params),
+        contentType : "application/json; charset=UTF-8",
+        success:function(result){  
+            
+        	var prjList = result.projectList;
+        	
+        	$('#projectList option').remove();
+        	var pOption = "";
+        	
+        	$.each(prjList, function(index, value){
+        		if (index == 0) {
+	        		pOption +='<option value="">프로젝트선택</option>';
+        		}
+        		pOption +='<option value="'+value+'">'+value+'</option>';
+        	});
+			$('#projectList').append(pOption);        	
+        	
+			
+        	var deptList = result.deptList;
+        	$('#deptList option').remove();
+        	var dOption = "";
+        	
+        	$.each(deptList, function(index, value){
+        		if (index == 0) {
+	        		dOption +='<option value="">부서선택</option>';
+        		}
+        		dOption +='<option value="'+value+'">'+value+'</option>';
+        	});
+			$('#deptList').append(dOption);
+        	
+        },   
+        error:function(e){  
+            console.log(e.responseText);  
+        }  
+    });
+	
+}
+
+function drawGrid(params) {
+	
+	var url = '/hts/getHcTimeSheetForJqgrid.sw';
+
+	var gridType = params.gridType;
+	
+	if (!gridType) {
+		gridType = 'sa';
+	}
+	
+	if (gridType == 'input') {
+		url = '/hts/getUserInfoOfInputHcTimeSheetForJqgrid.sw';
+	}
+       	
+	var dataObjects;
+	
+	$.ajax({  
+        type:"POST",  
+        url:url,  
+        dataType:'json',
+        data:JSON.stringify(params),
+        contentType : "application/json; charset=UTF-8",
+        success:function(result){  
+            
+        	var columns;
+        	if (gridType == 'input') {
+	        	columns = [
+	        	               {label:'사번', name:'userNo',index:'',width:30},
+	        	               {label:'성명', name:'name',index:'',width:30},
+	        	               {label:'Name', name:'engName',index:'',width:60},
+	        	               {label:'부서', name:'dept',index:'',width:80},
+	        	               {label:'구분', name:'type',index:'',width:30},
+	        	               {label:'직급', name:'position',index:'',width:100},
+	       	               ];
+        	} else {
+	        	columns = [
+	        	               {label:'사번', name:'userNo',index:'',width:30},
+	        	               {label:'성명', name:'name',index:'',width:30},
+	        	               {label:'Name', name:'engName',index:'',width:60},
+	        	               {label:'부서', name:'dept',index:'',width:80},
+	        	               {label:'프로젝트', name:'projectCode',index:'',width:50},
+	        	               {label:'구분', name:'type',index:'',width:30},
+	        	               {label:'직급', name:'position',index:'',width:100},
+	        	               {label:'합계', name:'sum',index:'',width:30, align:'center'},
+	       	               ];
+        	}
+        	
+        	var returnColumn = result.resultColumnList;
+        	
+			for (var i =0; i < returnColumn.length; i++) {
+				column = {label:returnColumn[i].date, name:returnColumn[i].date, index:returnColumn[i].date, width:50, align:'center'};
+				columns.push(column);
+			}
+        	
+        	var data = result.resultDatas;
+        	
+        	var caption = result.caption;
+        	
+        	if (gridType != 'input') {
+        		
+	        	var totalSum = result.totalSum;
+	        	var hc = totalSum/8; 
+	        	
+	        	var summary = result.summary;
+	        	if (summary) {
+		        	summary[0].hc = hc;
+		        	summary[0].totalSum = totalSum;
+	        	}
+	        	$("#timeSheetSummary").jqGrid({
+	                data: summary,
+	                datatype: "local",
+	                colModel: [
+		        	               {label:'VP+CTO', name:'VP+CTO',index:'',width:50, align:'center', formatter:defaultValue},
+		        	               {label:'S/W', name:'S/W',index:'',width:50, align:'center', formatter:defaultValue},
+		        	               {label:'H/W', name:'H/W',index:'',width:50, align:'center', formatter:defaultValue},
+		        	               {label:'E/S', name:'E/S',index:'',width:50, align:'center', formatter:defaultValue},
+		        	               {label:'MGT', name:'MGT',index:'',width:50, align:'center', formatter:defaultValue},
+		        	               {label:'PM', name:'PM',index:'',width:50, align:'center', formatter:defaultValue},
+		        	               {label:'합계', name:'totalSum',index:'',width:50, align:'center', formatter:defaultValue},
+		        	               {label:'H/C', name:'hc',index:'',width:50, align:'center', formatter:defaultValue}
+		        	           ],
+					//loadonce: false,
+					viewrecords: true,
+					caption:'Summary',
+	                footerrow: false,
+	                width: 500,
+	                //rowNum: 150,
+	                height: 'auto'
+	            });
+        	}
+        	
+			$("#timeSheet").jqGrid({
+                data: data,
+                datatype: "local",
+                colModel: columns,
+				viewrecords: true,
+				caption:'HC TIME SHEET - ' + caption,
+                footerrow: false,
+                width: 1300,
+                rowNum: 300,
+                height: 'auto'
+            });
+        },   
+        error:function(e){  
+            console.log(e.responseText);  
+        }  
+    });
+	
+}
+
+$(document).ready(function () {
+       	
+	$("input[name=chk_info] , #projectList , #deptList").change(function() {
+			
+		//var params = {fromDate:"2016/11/11", toDate:"2016/11/31"};
+	    var params = {};
+	    
+	    //params.gridType = $(this).val();
+	    params.gridType = $('input[name=chk_info]:checked').val();
+	    
+	    if (params.gridType == 'input') {
+	    	
+	    	$("#projectList").hide();
+	    	
+	    } else {
+	    	$("#projectList").show();
+	    	
+			var selectedPrj = $("#projectList option:selected").val();
+			if (selectedPrj) {
+				params.projectCode = selectedPrj;
+			}
+	    }
+		
+		var selectedDetp = $("#deptList option:selected").val();
+	    if (selectedDetp) {
+	    	params.dept = selectedDetp;
+	    }
+	    
+	    $.jgrid.gridUnload('timeSheet');
+	    $.jgrid.gridUnload('timeSheetSummary');
+		
+	    drawGrid(params);
+	})
+       	
+	var params = {}
+	
+	setDefaultOption();
+	
+	drawGrid(params);	
+       	
+	 
+       	
+});
+    </script>
+
+
+<title>HC Time Sheet</title>
+</head>
+<body>
+	<div class='gridTypdDiv'>
+		<input type="radio" name="chk_info" checked="checked" value="st">S/T
+		<input type="radio" name="chk_info" value="ot">O/T
+		<input type="radio" name="chk_info" value="tt">Total
+		<input type="radio" name="chk_info" value="input">입력/미입력
+	</div>
+	<div style='margin-top: 10px;'></div>
+	<div class='filterDiv'>
+		<select id="projectList"></select>
+		<select id="deptList"></select>
+	</div>
+	<div style='margin-top: 20px;'></div>
+	<table id="timeSheet"></table>
+	<div style='margin-top: 20px;'></div>
+	<table id="timeSheetSummary"></table>
+</body>
+</html>
