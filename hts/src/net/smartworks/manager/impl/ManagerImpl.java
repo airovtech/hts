@@ -361,6 +361,7 @@ public class ManagerImpl implements IManager{
 			String dept = user.getDept();
 			String position = user.getPosition();
 			String type = user.getType();
+			String mailAddr = user.getMailAddress();
 			
 			Map userMap = new HashMap();
 			
@@ -379,9 +380,11 @@ public class ManagerImpl implements IManager{
 			if (type != null) {
 				userMap.put("type", type);
 			}
-			
 			if (position != null) {
 				userMap.put("position", position);
+			}
+			if (mailAddr != null) {
+				userMap.put("mailAddress", mailAddr);
 			}
 			//프로젝트가 처음 생성되는 순간, 검색범위 날짜 맵을 만들어서 초기화 시켜준다.
 			//기본값은 X

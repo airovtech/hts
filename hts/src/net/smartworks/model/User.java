@@ -21,6 +21,8 @@ public class User {
 	private String resign;//퇴사여부 
 	private Date resignDate;//퇴사일 
 	
+	private boolean teamLeader;
+	
 	public String getUserId() {
 		return userId;
 	}
@@ -80,6 +82,12 @@ public class User {
 	}
 	public void setResignDate(Date resignDate) {
 		this.resignDate = resignDate;
+	}
+	public boolean isTeamLeader() {
+		return teamLeader;
+	}
+	public void setTeamLeader(boolean teamLeader) {
+		this.teamLeader = teamLeader;
 	}
 
 	

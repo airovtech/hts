@@ -16,6 +16,7 @@ import java.util.Map;
 
 public class DateUtil {
 
+	
 	public static Date convertLocaleDate(Date gmtDate) {
 		
 		if (gmtDate == null)

@@ -9,6 +9,8 @@
         http://www.springframework.org/schema/context 
         http://www.springframework.org/schema/context/spring-context.xsd">
  
+	<bean id="excelView" class="net.smartworks.model.ExcelView"/>
+ 
  	<bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="location" value="/WEB-INF/conf/hts.properties" />
 	</bean>
@@ -34,6 +36,23 @@
 		</property>
 		<property name="serverUrl">
 			<value>${serverUrl}</value>
+		</property>
+		
+		<property name="mail_SenderMailServerSMTP">
+			<value>${mail_SenderMailServerSMTP}</value>
+		</property>
+		<property name="mail_SenderId">
+			<value>${mail_SenderId}</value>
+		</property>
+		<property name="mail_SenderPassword">
+			<value>${mail_SenderPassword}</value>
+		</property>
+
+		<property name="mail_TargetDomainAddressLock">
+			<value>${mail_TargetDomainAddressLock}</value>
+		</property>
+		<property name="mail_TargetDomainAddress">
+			<value>${mail_TargetDomainAddress}</value>
 		</property>
 		
 		<property name="timeSheetTableName">
@@ -105,6 +124,9 @@
 		</property>
 		<property name="user_UserResignDateColumnName">
 			<value>${user_UserResignDateColumnName}</value>
+		</property>
+		<property name="user_UserTeamLeaderColumnName">
+			<value>${user_UserTeamLeaderColumnName}</value>
 		</property>
 		
 		<property name="projectCodeTableName">

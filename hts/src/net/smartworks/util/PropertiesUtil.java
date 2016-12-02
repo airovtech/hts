@@ -20,6 +20,16 @@ public class PropertiesUtil {
 	private String mailContentsUrl_Leader;
 	private String serverUrl;
 	
+	//Mail
+	
+	private String mail_SenderMailServerSMTP;
+	private String mail_SenderId;
+	private String mail_SenderPassword;
+	
+	private String mail_TargetDomainAddressLock;
+	private String mail_TargetDomainAddress;
+
+
 	//Time Sheet
 	private String timeSheetTableName;
 	
@@ -48,6 +58,8 @@ public class PropertiesUtil {
 	private String user_UserMailAddrColumnName;
 	private String user_UserResignColumnName;
 	private String user_UserResignDateColumnName;
+	
+	private String user_UserTeamLeaderColumnName;
 	
 	//ProjectCode
 	private String projectCodeTableName;
@@ -246,6 +258,42 @@ public class PropertiesUtil {
 	}
 	public void setDate_Pattern(String date_Pattern) {
 		this.date_Pattern = date_Pattern;
+	}
+	public String getMail_SenderMailServerSMTP() {
+		return mail_SenderMailServerSMTP;
+	}
+	public void setMail_SenderMailServerSMTP(String mail_SenderMailServerSMTP) {
+		this.mail_SenderMailServerSMTP = mail_SenderMailServerSMTP;
+	}
+	public String getMail_SenderId() {
+		return mail_SenderId;
+	}
+	public void setMail_SenderId(String mail_SenderId) {
+		this.mail_SenderId = mail_SenderId;
+	}
+	public String getMail_SenderPassword() {
+		return mail_SenderPassword;
+	}
+	public void setMail_SenderPassword(String mail_SenderPassword) {
+		this.mail_SenderPassword = mail_SenderPassword;
+	}
+	public String getMail_TargetDomainAddressLock() {
+		return mail_TargetDomainAddressLock;
+	}
+	public void setMail_TargetDomainAddressLock(String mail_TargetDomainAddressLock) {
+		this.mail_TargetDomainAddressLock = mail_TargetDomainAddressLock;
+	}
+	public String getMail_TargetDomainAddress() {
+		return mail_TargetDomainAddress;
+	}
+	public void setMail_TargetDomainAddress(String mail_TargetDomainAddress) {
+		this.mail_TargetDomainAddress = mail_TargetDomainAddress;
+	}
+	public String getUser_UserTeamLeaderColumnName() {
+		return user_UserTeamLeaderColumnName;
+	}
+	public void setUser_UserTeamLeaderColumnName(String user_UserTeamLeaderColumnName) {
+		this.user_UserTeamLeaderColumnName = user_UserTeamLeaderColumnName;
 	}
 
 }

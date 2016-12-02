@@ -21,6 +21,8 @@ public class UserCond {
 	private String resign;//퇴사여부 
 	private Date resignDate;//퇴사일 
 	
+	private String teamLeader;
+	
 	public String getUserId() {
 		return userId;
 	}
@@ -80,6 +82,12 @@ public class UserCond {
 	}
 	public void setResignDate(Date resignDate) {
 		this.resignDate = resignDate;
+	}
+	public String getTeamLeader() {
+		return teamLeader;
+	}
+	public void setTeamLeader(String teamLeader) {
+		this.teamLeader = teamLeader;
 	}
 
 	

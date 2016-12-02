@@ -18,10 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import net.smartworks.factory.ManagerFactory;
 import net.smartworks.model.HcTimeSheetCond;
@@ -30,7 +32,53 @@ import net.smartworks.util.PropertiesUtil;
 @Controller
 public class HtsController {
 
+	
+	 @RequestMapping("/HcTimeSheet")
+	 public String excelDownload(Model model, HttpServletRequest request){
+		
+		String resultDate = null;
+		String resultColumnData = null;
+		String resultSummaryData = null;
+		String resultSummaryColumnData = null;
+		try {
+			resultDate = new String(request.getParameter("resultData").getBytes("8859_1"), "utf-8");
+			resultColumnData = new String(request.getParameter("resultColumnData").getBytes("8859_1"), "utf-8");
+			
+			resultSummaryData = new String(request.getParameter("resultSummaryData").getBytes("8859_1"), "utf-8");
+			resultSummaryColumnData = new String(request.getParameter("resultSummaryColumnData").getBytes("8859_1"), "utf-8");
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		model.addAttribute("resultDate", resultDate);
+		model.addAttribute("resultColumnData", resultColumnData);
+		model.addAttribute("resultSummaryData", resultSummaryData);
+		model.addAttribute("resultSummaryColumnData", resultSummaryColumnData);
+		
+		return "excelView";
+	 }
+	
+	
+	@RequestMapping(value="/hcTimeSheet", method=RequestMethod.GET)
+	public ModelAndView testExcel(HttpServletRequest request) {
 
+		
+		
+		
+		
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("excelView");
+		
+		Map modelMap = new HashMap();
+		modelMap.put("jhihi", "hello");
+		
+		mav.addAllObjects(modelMap);
+		
+		
+	    return new ModelAndView("excelView");
+	}
+	
 	@RequestMapping(value="/getDefaultSelectOptionForJqgrid", produces = "application/json", method=RequestMethod.POST)
 	public @ResponseBody Map getDefaultSelectOptionForJqgrid(@RequestBody Map<String, Object> requestBody, HttpServletRequest request, HttpServletResponse response) throws Exception {
 

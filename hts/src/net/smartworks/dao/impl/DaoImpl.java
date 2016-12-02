@@ -64,6 +64,10 @@ public class DaoImpl implements IDao {
 				sql.append(" AND ").append(PropertiesUtil.getInstance().getUser_UserTypeColumnName()).append(" = ?");
 				setParams.add(cond.getType());
 			}
+			if (cond.getTeamLeader() != null) {
+				sql.append(" AND ").append(PropertiesUtil.getInstance().getUser_UserTeamLeaderColumnName()).append(" = ?");
+				setParams.add(Boolean.parseBoolean(cond.getTeamLeader()));
+			}
 			if (setParams.size() != 0) {
 				setParamsArray = new Object[setParams.size()];
 				setParams.toArray(setParamsArray);

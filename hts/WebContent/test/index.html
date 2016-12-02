@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8">
 
-<link rel="stylesheet" type="text/css" href="js/jqueryui/jquery-ui.css" />
-<link rel="stylesheet" type="text/css" href="js/jqueryui/jquery-ui.theme.css" />
-<link rel="stylesheet" type="text/css" href="js/jqgrid/css/ui.jqgrid.css" />
+<link rel="stylesheet" type="text/css" media="screen"
+	href="js/jqueryui/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" media="screen"
+	href="js/jqgrid/css/ui.jqgrid.css" />
 <script type="text/javascript" src="js/jqgrid/js/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="js/jqueryui/jquery-ui.js"></script>
 <script type="text/javascript" src="js/jqgrid/js/jquery.jqGrid.min.js"></script>
@@ -262,10 +263,8 @@ $(document).ready(function () {
 		showMonthAfterYear: true,
 		showOtherMonths:true,
 		selectOtherMonths:true,
- 		changeMonth:true,
-/*		changeYear:true, */
-/* 		currentText: '오늘로',
-		showButtonPanel: true, */
+		changeMonth:true,
+		changeYear:true,
 		yearSuffix: '년'
 		
 	});
@@ -296,14 +295,17 @@ $(document).ready(function () {
 		var gridDate = $('#timeSheet').getRowData();
 		var columnNames = $("#timeSheet").jqGrid('getGridParam','colNames');
 		
-		var resultSummaryData = $("#timeSheetSummary").getRowData();
-		var resultSummaryColumnData = $("#timeSheetSummary").jqGrid('getGridParam','colNames');
+		console.log(columnNames);
 		
-		var form = "<form action='HcTimeSheet.xls' method='post'>"; 
+		var postData = {};
+		postData.name = "kmyu"
+		postData.age = "36";
+		
+		//console.log(JSON.stringify(gridDate))
+		
+		var form = "<form action='exceldown.xls' method='post'>"; 
 		form += "<input type='hidden' name='resultData' value='"+JSON.stringify(gridDate)+"' />"; 
 		form += "<input type='hidden' name='resultColumnData' value='"+JSON.stringify(columnNames)+"' />"; 
-		form += "<input type='hidden' name='resultSummaryData' value='"+JSON.stringify(resultSummaryData)+"' />"; 
-		form += "<input type='hidden' name='resultSummaryColumnData' value='"+JSON.stringify(resultSummaryColumnData)+"' />"; 
 		form += "</form>"; 
 		$(form).appendTo("body").submit().remove(); 
 		

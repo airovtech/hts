@@ -25,6 +25,7 @@ public class UserMapper implements RowMapper<User> {
 		user.setMailAddress(rs.getString(PropertiesUtil.getInstance().getUser_UserMailAddrColumnName()));
 		user.setResign(rs.getString(PropertiesUtil.getInstance().getUser_UserResignColumnName()));
 		user.setResignDate(rs.getDate(PropertiesUtil.getInstance().getUser_UserResignDateColumnName()));
+		user.setTeamLeader(rs.getBoolean(PropertiesUtil.getInstance().getUser_UserTeamLeaderColumnName()));
 
 		return user;
 	}

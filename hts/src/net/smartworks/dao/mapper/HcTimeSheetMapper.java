@@ -2,6 +2,7 @@ package net.smartworks.dao.mapper;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 
 import org.springframework.jdbc.core.RowMapper;
 
@@ -17,7 +18,9 @@ public class HcTimeSheetMapper implements RowMapper<HcTimeSheet> {
 		HcTimeSheet hcTimeSheet = new HcTimeSheet();
 		
 		hcTimeSheet.setObjId(rs.getString("id"));
-		hcTimeSheet.setWorkDate(DateUtil.convertLocaleDate(rs.getDate(PropertiesUtil.getInstance().getTs_CreateDateColumnName())));
+		Timestamp workDate = rs.getTimestamp((PropertiesUtil.getInstance().getTs_CreateDateColumnName()));
+		//System.out.println(workDate);
+		hcTimeSheet.setWorkDate(DateUtil.convertLocaleDate(workDate));
 		hcTimeSheet.setType(rs.getString(PropertiesUtil.getInstance().getTs_UserTypeColumnName()));
 		hcTimeSheet.setDept(rs.getString(PropertiesUtil.getInstance().getTs_DetpColumnName()));
 		hcTimeSheet.setPosition(rs.getString(PropertiesUtil.getInstance().getTs_UserPositionColumnName()));

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<script type="text/javascript" src="js/jqgrid/js/jquery-1.11.0.min.js"></script> 
+<style>
+#dataTbl{
+	
+	border:1px solid blue;
+}
+#dataTbl tr {
+	border-top:1px solid blue;
+}
+
+</style>
+<title>Insert title here</title>
+</head>
+<body>
+
+<button id='btnExcel'>excel download</button>
+<table id='dataTbl'>
+	<tr>
+		<th>name</th>
+		<th>age</th>
+	</tr>
+	<tr>
+		<td>yukm</td>
+		<td>36</td>
+	</tr>
+</table>
+<script>
+	$("#btnExcel").on("click", function () {
+		window.open('data:application/vnd.ms-excel,' + encodeURIComponent($("#dataTbl").html()))
+		e.preventDefault();
+	});
+</script>
+</body>
+</html>

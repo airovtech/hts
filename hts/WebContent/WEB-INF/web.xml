@@ -21,6 +21,10 @@
     <servlet-name>hts</servlet-name>
     <url-pattern>*.sw</url-pattern>
   </servlet-mapping>
+  <servlet-mapping>
+    <servlet-name>hts</servlet-name>
+    <url-pattern>*.xls</url-pattern>
+  </servlet-mapping>
   <listener>
     <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
   </listener>

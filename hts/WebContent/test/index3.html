@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+	
+<link rel="stylesheet" type="text/css" media="screen" href="js/jqueryui/jquery-ui.css" />
+<link rel="stylesheet" type="text/css" media="screen" href="js/jqgrid/css/ui.jqgrid.css" />
+<script type="text/javascript" src="js/jqgrid/js/jquery-1.11.0.min.js"></script> 
+<script type="text/javascript" src="js/jqueryui/jquery-ui.js"></script> 
+<script type="text/javascript" src="js/jqgrid/js/jquery.jqGrid.min.js"></script>
+    
+<title>HC Time Sheet</title>
+</head>
+<body>
+
+<script type="text/javascript">
+//화면 로드 시 조회
+
+$(document).ready(function () {
+	doOnLoadQuery();
+});
+
+
+ function doOnLoadQuery(){
+  //jqGrid 세팅
+  var grid = $('#WPCP16002_Grid');
+  
+  grid.clearGridData();
+  
+  grid.jqGrid({
+   url:'/WPC/P16/WPCP16002_tab1_popup_dtl_list.do',
+   datatype: "json",
+   jsonReader: {repeatitems : false},
+         colNames:['호선', 'PE블록', '2차 PE', '1차 PE', 'BLOCK', 'BLOCK<br>TYPE', '팀'
+                   ,'착수','완료', '착수','완료', '지연일', '완료주차'],
+         colModel: [ //데이터 매핑 및 로우 속성
+           {name:'project_code' ,index:'project_code' ,width:60  ,align:"center"},
+           {name:'pe_blk'       ,index:'pe_blk'       ,width:80  ,align:"center"},
+           {name:'sec_blk'      ,index:'sec_blk'      ,width:80  ,align:"center"},
+           {name:'first_blk'    ,index:'first_blk'    ,width:80  ,align:"center"},
+           {name:'blk_no'       ,index:'blk_no'       ,width:80  ,align:"center"},
+           {name:'blk_type'     ,index:'blk_type'     ,width:80  ,align:"center"},
+           {name:'work_nm'      ,index:'work_nm'      ,width:80  ,align:"center"},
+           {name:'ps_dt'        ,index:'ps_dt'        ,width:80  ,align:"center"},
+           {name:'pf_dt'        ,index:'pf_dt'        ,width:80  ,align:"center"},
+           {name:'ts_dt'        ,index:'ts_dt'        ,width:80  ,align:"center"},
+           {name:'tf_dt'        ,index:'tf_dt'        ,width:80  ,align:"center"},
+           {name:'delay_day'    ,index:'delay_day'    ,width:70  ,align:"center"},
+           {name:'txn_week'     ,index:'txn_week'     ,width:60  ,align:"center"}
+           ],
+       //caption: 1,
+       pager: "#pagingBar",
+       rowList: [],
+       pgbuttons: false,
+       pgtext: null,
+       viewrecords: false,
+       rowNum:-1,
+       //loadonce : true,
+       height:'500',
+       gridview:true,
+       shrinkToFit:false,
+       viewrecords:false,
+       loadError: function (jqXHR, textStatus, errorThrown) {
+           $("#WPCP16002_Grid").html(jqXHR.responseText);
+       },
+       postData:{
+        radio_tp : $('#radio_tp').val(),
+     fr_dt    : $('#fr_dt').val(),
+     to_dt    : $('#to_dt').val(),
+     team     : $('#team').val(),
+     team_nm  : $('#team_nm').val(),
+     proj_no  : $('#proj_no').val(),
+    },
+       loadComplete: function (data) {
+        
+          },
+          gridComplete: function () {
+         //천단위 구분자 넣기
+           var len, point, str, countRow;
+           countRow = $("#WPCP16002_Grid").getGridParam("records") + "";
+              point = countRow.length % 3
+              len = countRow.length;
+              str = countRow.substring(0, point);
+              while (point < len) {
+                  if (str != "") str += ",";
+                  str += countRow.substring(point, point + 3);
+                  point += 3;
+              }
+           $('#totalRows').text('총: '+ str +' 건');
+          }
+     });
+     
+     //Header Grouping
+     grid.jqGrid('setGroupHeaders', {
+    useColSpanStyle: true, 
+    groupHeaders:[
+   {startColumnName: 'ps_dt', numberOfColumns: 2, titleText: '계획'},
+   {startColumnName: 'ts_dt', numberOfColumns: 4, titleText: '실적'}
+    ]
+  });
+     
+     // Excel Export
+     grid.jqGrid('navGrid','#pagingBar', {excel:true, edit:false, add:false
+      , del:false, refresh:false, search:false
+     });
+     grid.jqGrid('navButtonAdd','#pagingBar', {caption:"Excel DownLoad",
+     onClickButton: function() {
+  grid.jqGrid('excelExport', {url:'/WPC/P16/WPCP16002_tab1_popup_dtl_excelView.do'});
+     }});
+     
+  grid.trigger("reloadGrid");
+ }
+</script>
+
+<div id="WPCP16002_Div">
+ <table summary="조회 리스트" id="WPCP16002_Grid"></table>
+ <div id="pagingBar"></div>
+</div>
+
+</body>
+</html>
