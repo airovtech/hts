@@ -78,9 +78,12 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 					
 					Map dateMap = (Map)dateList.get(j);
 					String date = (String)dateMap.get("date");
+					String week = (String)dateMap.get("week");
 					
 					String flag = (String)userMap.get(date);
-					if (flag == null || flag.equalsIgnoreCase("X")) {
+					
+					//주말에는 작성하지 않아도 알림 메일이 가지 않는다. 
+					if ((week != null && !week.equalsIgnoreCase("sun") && !week.equalsIgnoreCase("sat")) && (flag == null || flag.equalsIgnoreCase("X"))) {
 						mailTarget.add(userMap);
 						break;
 					}

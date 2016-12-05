@@ -6,6 +6,7 @@
 
 package net.smartworks.util;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -52,6 +53,8 @@ public class DateUtil {
 		if (fromDate == null || toDate == null) {
 			return null;
 		}
+
+		Calendar nowCal = Calendar.getInstance();
 		
 		Calendar fromDateCal = Calendar.getInstance();
 		fromDateCal.setTime(fromDate);
@@ -71,25 +74,25 @@ public class DateUtil {
 		    String day = null;
 		    switch(dayNum){
 		        case 1:
-		            day = "일";
+		            day = "sun";
 		            break ;
 		        case 2:
-		            day = "월";
+		            day = "mon";
 		            break ;
 		        case 3:
-		            day = "화";
+		            day = "tue";
 		            break ;
 		        case 4:
-		            day = "수";
+		            day = "wed";
 		            break ;
 		        case 5:
-		            day = "목";
+		            day = "thu";
 		            break ;
 		        case 6:
-		            day = "금";
+		            day = "fri";
 		            break ;
 		        case 7:
-		            day = "토";
+		            day = "sat";
 		            break ;
 		    }
 			
@@ -97,6 +100,13 @@ public class DateUtil {
 		    Map resultMap = new HashMap();
 		    resultMap.put("date" , sdf.format(fromDateCal.getTime()));
 		    resultMap.put("week", day);
+		    
+		    if (nowCal.getTimeInMillis() < fromDateCal.getTimeInMillis()) {
+		    	resultMap.put("isFuture", "true");
+		    } else {
+		    	resultMap.put("isFuture", "false");
+		    }
+		    
 		    resultList.add(resultMap);
 			
 			if (dateString.equals(targetDateString)) {
@@ -115,6 +125,9 @@ public class DateUtil {
 		if (date == null)
 			return null;
 		
+		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+		date = formatter.parse(formatter.format(date));
+		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);
 		
@@ -130,7 +143,7 @@ public class DateUtil {
 		
 		if (pattern == null || dateStr == null)
 			return null;
-		
+
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
 		Date date = sdf.parse(dateStr);
 		
@@ -151,6 +164,9 @@ public class DateUtil {
 		
 		if (date == null)
 			return null;
+
+		DateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+		date = formatter.parse(formatter.format(date));
 		
 		Calendar cal = Calendar.getInstance();
 		cal.setTime(date);

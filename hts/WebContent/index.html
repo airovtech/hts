@@ -6,12 +6,21 @@
 <link rel="stylesheet" type="text/css" href="js/jqueryui/jquery-ui.css" />
 <link rel="stylesheet" type="text/css" href="js/jqueryui/jquery-ui.theme.css" />
 <link rel="stylesheet" type="text/css" href="js/jqgrid/css/ui.jqgrid.css" />
+
+
+<link rel="stylesheet" type="text/css" href="js/bootstrap/bootstrap.min.css" />
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css"> -->
+
+
 <script type="text/javascript" src="js/jqgrid/js/jquery-1.11.0.min.js"></script>
 <script type="text/javascript" src="js/jqueryui/jquery-ui.js"></script>
 <script type="text/javascript" src="js/jqgrid/js/jquery.jqGrid.min.js"></script>
+
 <style type="text/css">
 body {
-	font-size:0.8em;
+	/* font-size:0.8em; */
+	font-size:1.2em;
+	margin-left:5px;
 }
 .btnExcel {
 	float:right;
@@ -55,7 +64,7 @@ function setDefaultOption() {
         	
         	$.each(prjList, function(index, value){
         		if (index == 0) {
-	        		pOption +='<option value="">프로젝트선택</option>';
+	        		pOption +='<option value="">Project code</option>';
         		}
         		pOption +='<option value="'+value+'">'+value+'</option>';
         	});
@@ -68,7 +77,7 @@ function setDefaultOption() {
         	
         	$.each(deptList, function(index, value){
         		if (index == 0) {
-	        		dOption +='<option value="">부서선택</option>';
+	        		dOption +='<option value="">Department</option>';
         		}
         		dOption +='<option value="'+value+'">'+value+'</option>';
         	});
@@ -98,7 +107,7 @@ function drawGrid(params) {
        	
 	var dataObjects;
 	
-	var pageWidth = $("#timeSheet").parent().width();
+	var pageWidth = $("#timeSheet").parent().width()-5;
 	
 	$.ajax({  
         type:"POST",  
@@ -111,30 +120,30 @@ function drawGrid(params) {
         	var columns;
         	if (gridType == 'input') {
 	        	columns = [
-	        	               {label:'사번', name:'userNo',index:'',width:30},
-	        	               {label:'성명', name:'name',index:'',width:30},
-	        	               {label:'Name', name:'engName',index:'',width:60},
-	        	               {label:'부서', name:'dept',index:'',width:80},
-	        	               {label:'구분', name:'type',index:'',width:30},
-	        	               {label:'직급', name:'position',index:'',width:100},
+	        	               {label:'사번', name:'userNo',index:'',width:40,fixed:true},
+	        	               {label:'성명', name:'name',index:'',width:60,fixed:true},
+	        	               {label:'Name', name:'engName',index:'',width:85,fixed:true},
+	        	               {label:'부서', name:'dept',index:'',width:130,fixed:true},
+	        	               {label:'구분', name:'type',index:'',width:40,fixed:true},
+	        	               {label:'직급', name:'position',index:'',width:100,fixed:true, frozen:true},
 	       	               ];
         	} else {
 	        	columns = [
-	        	               {label:'사번', name:'userNo',index:'',width:30},
-	        	               {label:'성명', name:'name',index:'',width:30},
-	        	               {label:'Name', name:'engName',index:'',width:60},
-	        	               {label:'부서', name:'dept',index:'',width:80},
-	        	               {label:'프로젝트', name:'projectCode',index:'',width:50},
-	        	               {label:'구분', name:'type',index:'',width:30},
-	        	               {label:'직급', name:'position',index:'',width:100},
-	        	               {label:'합계', name:'sum',index:'',width:30, align:'center'},
+	        	               {label:'사번', name:'userNo',index:'',width:40,fixed:true},
+	        	               {label:'성명', name:'name',index:'',width:60,fixed:true},
+	        	               {label:'Name', name:'engName',index:'',width:85,fixed:true},
+	        	               {label:'부서', name:'dept',index:'',width:130,fixed:true},
+	        	               {label:'프로젝트', name:'projectCode',index:'',width:60,fixed:true},
+	        	               {label:'구분', name:'type',index:'',width:40,fixed:true},
+	        	               {label:'직급', name:'position',index:'',width:100,fixed:true},
+	        	               {label:'합계', name:'sum',index:'',width:50, align:'center',fixed:true, frozen:true},
 	       	               ];
         	}
         	
         	var returnColumn = result.resultColumnList;
         	
 			for (var i =0; i < returnColumn.length; i++) {
-				column = {label:returnColumn[i].date, name:returnColumn[i].date, index:returnColumn[i].date, width:50, align:'center'};
+				column = {label:returnColumn[i].date, name:returnColumn[i].date, index:returnColumn[i].date, width:70, align:'center'};
 				columns.push(column);
 			}
         	
@@ -185,6 +194,9 @@ function drawGrid(params) {
                 width: pageWidth,
                 rowNum: 300,
                 height: 'auto',
+                //height: 400,
+                /* sortable:false, */
+                shrinkToFit : false,
                 loadComplete: function () {
 				    $('td[title=X]').css('color','red')
                 }
@@ -245,6 +257,7 @@ $(document).ready(function () {
 	//스마트웍스닷넷 회사메뉴 화면에 들어가 '입력/미입력'그리드의 공간 을 확보하기 위함
 	//스마트웍스닷넷 회사메뉴에 들어가지 않는다면 의미없는 코드 
 	$('body').height(2000);
+	//$('body').css('height', 2000)
 	
 	$('#datepickerBtn').bind('click',function(){
 		refreshGrid();
@@ -316,26 +329,55 @@ $(document).ready(function () {
 <title>HC Time Sheet</title>
 </head>
 <body>
+
+
 	<div class='datePicker'>
 		조회기간:
 		<input type="text" id="fromDate"> ~
 		<input type="text" id="toDate">
 		<button id='datepickerBtn'>검색</button>
 	</div>
+	
+	
 	<div style='margin-top: 10px;'></div>
 	<div class='gridTypdDiv'>
-		<input type="radio" name="chk_info" checked="checked" value="st">S/T
+	
+		<!-- <input type="radio" name="chk_info" checked="checked" value="st">S/T
 		<input type="radio" name="chk_info" value="ot">O/T
 		<input type="radio" name="chk_info" value="tt">Total
-		<input type="radio" name="chk_info" value="input">입력/미입력
+		<input type="radio" name="chk_info" value="input">입력/미입력 -->
+		
+		<label class="radio-inline">
+		  <input type="radio" name="chk_info" id="st" value="st"> S/T
+		</label>
+		<label class="radio-inline">
+		  <input type="radio" name="chk_info" id="ot" value="ot"> O/T
+		</label>
+		<label class="radio-inline">
+		  <input type="radio" name="chk_info" id="tt" value="tt"> Total
+		</label>
+		<label class="radio-inline">
+		  <input type="radio" name="chk_info" id="input" value="input"> 입력/미입력
+		</label>
+		
+		
 	</div>
+	
+	
 	<div style='margin-top: 10px;'></div>
-	<div class='filterDiv'>
-		<select id="projectList"></select>
-		<select id="deptList"></select>
+	<div class='filterDiv form-inline'>
+		<!-- <select id="projectList"></select>
+		<select id="deptList"></select> -->
+	
+ 		<select id="projectList" class="form-control" style='width:150px;height:25px;font-size:1em;'></select>
+		<select id="deptList" class="form-control" style='width:150px;height:25px;font-size:1em;'></select>
+		
 		<button id='btnExcel' class='btnExcel'>excel download</button>
 	</div>
-	<div style='margin-top: 20px;'></div>
+	
+	
+	
+	<div style='margin-top: 10px;'></div>
 	<table id="timeSheet"></table>
 	<div style='margin-top: 20px;'></div>
 	<table id="timeSheetSummary"></table>

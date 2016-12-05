@@ -6,6 +6,7 @@
 
 package net.smartworks.manager.impl;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -391,8 +392,17 @@ public class ManagerImpl implements IManager{
 			for (int j = 0; j < dateList.size(); j++) {
 				Map dateListMap = dateList.get(j);
 				String dateString = (String)dateListMap.get("date");
-				//String weekString = (String)dateListMap.get("week");
-				userMap.put(dateString, "X");
+				String weekString = (String)dateListMap.get("week");
+				String isFuture = (String)dateListMap.get("isFuture");
+				if (weekString != null && (weekString.equalsIgnoreCase("sun") || weekString.equalsIgnoreCase("sat"))) {
+					userMap.put(dateString, "");
+				} else {
+					if (isFuture != null && isFuture.equalsIgnoreCase("true")) {
+						userMap.put(dateString, "");
+					} else {
+						userMap.put(dateString, "X");
+					}
+				}
 			}
 			
 			usersMap.put(userNo, userMap);
