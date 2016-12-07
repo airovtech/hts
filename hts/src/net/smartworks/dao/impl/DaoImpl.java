@@ -118,7 +118,7 @@ public class DaoImpl implements IDao {
 
 		StringBuffer sql = new StringBuffer();
 		sql.append(" SELECT DISTINCT ").append(PropertiesUtil.getInstance().getPrj_CodeColumn()).append(" FROM ").append(PropertiesUtil.getInstance().getProjectCodeTableName());
-		sql.append(" ORDER BY ").append(PropertiesUtil.getInstance().getPrj_CodeColumn());
+		sql.append(" ORDER BY ").append(PropertiesUtil.getInstance().getPrj_CodeColumn()).append(" DESC");
 		List<String> result = jdbcTemplateObject.queryForList(sql.toString(), String.class);
 		
 		return result;

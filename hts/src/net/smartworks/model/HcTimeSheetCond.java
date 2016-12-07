@@ -30,6 +30,8 @@ public class HcTimeSheetCond {
 	private String st;
 	private String ot;
 	
+	private String notInputOnly;
+	
 	public String getObjId() {
 		return objId;
 	}
@@ -120,6 +122,11 @@ public class HcTimeSheetCond {
 	public void setGridType(String gridType) {
 		this.gridType = gridType;
 	}
-	
+	public String getNotInputOnly() {
+		return notInputOnly;
+	}
+	public void setNotInputOnly(String notInputOnly) {
+		this.notInputOnly = notInputOnly;
+	}
 }
 

@@ -9,7 +9,9 @@
 package net.smartworks.schedulJob;
 
 import java.io.UnsupportedEncodingException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -194,15 +196,19 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 		}
 		public void run() {
 			try {
+				
+				Date today = new Date();
+				SimpleDateFormat sdf = new SimpleDateFormat(PropertiesUtil.getInstance().getDate_Pattern());
+				
 				String to = toUserAddress;
 				if (to == null)
 					return;
 				String from = PropertiesUtil.getInstance().getMail_SenderId();
 				String title = null;
 				if (mailType.equalsIgnoreCase(HcTimeSheetWatcherJob.LEADER)) {
-					title = "HcTimeSheet 안내 메일입니다(팀장용).";
+					title = "Time Sheet 팀 미입력 레포트(팀장용) - " + sdf.format(today) + ".";
 				} else {
-					title = "HcTimeSheet 안내 메일입니다.";
+					title = "Time Sheet 미입력 레포트 - " + sdf.format(today) + ".";
 				}
 				String content = toMailContent(userMapList, mailType, columnList);
 				
@@ -263,11 +269,7 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 		String id = PropertiesUtil.getInstance().getMail_SenderId();
 		String pass = PropertiesUtil.getInstance().getMail_SenderPassword();
 		
-		
-		
 		to = "kmyu@smartworks.net";
-		
-		
 		
 		sendMail(mailServerName, id, pass, from, to, subject, messageText);
 		

@@ -25,6 +25,14 @@ body {
 .btnExcel {
 	float:right;
 }
+.clsHoliday {
+	background-color:#E6E6E6;
+}
+.ui-state-hover {
+	background-color:#E6E6E6 !important;
+	border: 1px solid #D5D5D5 !important;
+	color: #FFF !important;
+}
 </style>
 <script type="text/javascript"> 
 
@@ -142,12 +150,34 @@ function drawGrid(params) {
         	
         	var returnColumn = result.resultColumnList;
         	
+        	
+        	//console.log('returnColumn',returnColumn);
+        	
+        	var whatWeekMe = function(date) {
+        		for (var i = 0; i < returnColumn.length; i++) {
+        			if (returnColumn[i].date == date) {
+        				return returnColumn[i].week;
+        			}
+        		}
+        	}
+        	
+        	var cellFnc = function(rowId, tv, rowObject, cm, rdata) {
+        		var week = whatWeekMe(cm.label);
+        		if (week == 'sat' || week == 'sun') {
+        			return 'class = clsHoliday'
+        		}
+        	}
+        	
 			for (var i =0; i < returnColumn.length; i++) {
-				column = {label:returnColumn[i].date, name:returnColumn[i].date, index:returnColumn[i].date, width:70, align:'center'};
+				column = {label:returnColumn[i].date, name:returnColumn[i].date, index:returnColumn[i].date, width:70, align:'center', cellattr:cellFnc};
 				columns.push(column);
 			}
         	
         	var data = result.resultDatas;
+        	
+        	
+        	//console.log('DATA : ', data);
+        	
         	
         	var caption = result.caption;
         	
@@ -161,19 +191,24 @@ function drawGrid(params) {
 		        	summary[0].hc = hc;
 		        	summary[0].totalSum = totalSum;
 	        	}
-	        	$("#timeSheetSummary").jqGrid({
-	                data: summary,
-	                datatype: "local",
-	                colModel: [
-		        	               {label:'VP+CTO', name:'VP+CTO',index:'',width:50, align:'center', formatter:defaultValue},
+	        	
+	        	var colModels = [
+		        	               /* {label:'VP+CTO', name:'VP+CTO',index:'',width:50, align:'center', formatter:defaultValue}, */
 		        	               {label:'S/W', name:'S/W',index:'',width:50, align:'center', formatter:defaultValue},
 		        	               {label:'H/W', name:'H/W',index:'',width:50, align:'center', formatter:defaultValue},
 		        	               {label:'E/S', name:'E/S',index:'',width:50, align:'center', formatter:defaultValue},
 		        	               {label:'MGT', name:'MGT',index:'',width:50, align:'center', formatter:defaultValue},
 		        	               {label:'PM', name:'PM',index:'',width:50, align:'center', formatter:defaultValue},
 		        	               {label:'합계', name:'totalSum',index:'',width:50, align:'center', formatter:defaultValue},
-		        	               {label:'H/C', name:'hc',index:'',width:50, align:'center', formatter:defaultValue}
-		        	           ],
+	        	                 ]
+	        	if (gridType != 'ot') {
+	        		colModels.push({label:'H/C', name:'hc',index:'',width:50, align:'center', formatter:defaultValue});
+	        	}  
+	        	
+	        	$("#timeSheetSummary").jqGrid({
+	                data: summary,
+	                datatype: "local",
+	                colModel: colModels,
 					//loadonce: false,
 					viewrecords: true,
 					caption:'Summary',
@@ -196,6 +231,10 @@ function drawGrid(params) {
                 height: 'auto',
                 //height: 400,
                 /* sortable:false, */
+                /* rowattr:function(rd){
+                	console.log('Rd:',rd);
+                	return {'week':'mon'}
+                }, */
                 shrinkToFit : false,
                 loadComplete: function () {
 				    $('td[title=X]').css('color','red')
@@ -230,9 +269,17 @@ function refreshGrid() {
 	    if (params.gridType == 'input') {
 	    	
 	    	$("#projectList").hide();
+	    	$("#notInputOnly").show();
+	    	
+	    	//입력 미입력에 대한 조건식 필요
+			var notInputOnly = $("#notInputOnly option:selected").val();
+			if (notInputOnly) {
+				params.notInputOnly = notInputOnly;
+			}
 	    	
 	    } else {
 	    	$("#projectList").show();
+	    	$("#notInputOnly").hide();
 	    	
 			var selectedPrj = $("#projectList option:selected").val();
 			if (selectedPrj) {
@@ -293,7 +340,7 @@ $(document).ready(function () {
 		});
 	});
 	
-	$("input[name=chk_info] , #projectList , #deptList").change(function() {
+	$("input[name=chk_info] , #projectList , #deptList , #notInputOnly").change(function() {
 		refreshGrid()
 	})
        	
@@ -301,7 +348,10 @@ $(document).ready(function () {
 	
 	setDefaultOption();
 	
+	
 	drawGrid(params);	
+	
+	$("#notInputOnly").hide();
        	
 	$("#btnExcel").on("click", function () {
 		
@@ -370,7 +420,13 @@ $(document).ready(function () {
 		<select id="deptList"></select> -->
 	
  		<select id="projectList" class="form-control" style='width:150px;height:25px;font-size:1em;'></select>
+ 		
 		<select id="deptList" class="form-control" style='width:150px;height:25px;font-size:1em;'></select>
+		
+		<select id="notInputOnly" class="form-control" style='width:150px;height:25px;font-size:1em;'>
+			<option value="false">전체</option>
+			<option value="true">미입력</option>
+		</select>
 		
 		<button id='btnExcel' class='btnExcel'>excel download</button>
 	</div>

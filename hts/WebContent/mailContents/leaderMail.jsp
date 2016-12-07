@@ -64,7 +64,7 @@
 	
 %>
 <body style="font-size:0.8em;">
-	<h1>HC TIME SHEET 미등록 알림(팀장용)</h1>
+	<h1>Time Sheet 미입력 레포트(팀장용)</h1>
 	<p style="margin-top:30px;"> * 금주 <span class="warn" style="color:red;">미등록된</span> Hc Time Sheet 가 조회 되어, 자동 발송된 알림 메일입니다.</p>
 	<p style="margin-top:20px;"> 이 메일은 해당 인원(들)의 팀장에게만 발송된 메일이며, 각 인원들에게는 자신의 미등록 내용만을 포함한 메일이 발송 되었습니다.   
 	<p style="margin-top:20px;"> 아래 표를 확인하시어 해당 인원의, 해당 날짜 Hc Time Sheet 를 '스마트웍스닷넷(HC Time Sheet 등록 업무)'에 등록 요청 바랍니다.</p>

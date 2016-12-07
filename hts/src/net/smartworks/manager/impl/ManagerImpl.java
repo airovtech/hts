@@ -6,7 +6,6 @@
 
 package net.smartworks.manager.impl;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -246,6 +245,7 @@ public class ManagerImpl implements IManager{
 				resultDataForJqgridMap.put("projectCode", projectCode);
 				
 				float sum = 0; 
+				float stSum = 0;
 				for (int k = 0; k < prjDateList.size(); k++) {
 					
 					Map prjDateMap = (Map)prjDateList.get(k);
@@ -255,10 +255,10 @@ public class ManagerImpl implements IManager{
 					String ot = prjDateMap.get("ot")+"";
 					String week = (String)prjDateMap.get("week");
 					
-					// standard , overtime 이냐에 따라서 들어가는 데이터가 달라져야 한다.
 					
 					String value = null;
 					
+					// standard , overtime 이냐에 따라서 들어가는 데이터가 달라져야 한다.
 					if (gridType == null) {
 						value = st;
 					} else if (gridType.equals("st")){
@@ -272,21 +272,23 @@ public class ManagerImpl implements IManager{
 					}
 					
 					resultDataForJqgridMap.put((String)prjDateMap.get("date"), value);
+					
 					if (value != null && value.length() != 0) {
 						sum += Float.parseFloat(value);
 					}
+					stSum += Float.parseFloat(st);
 					
 				}
 				resultDataForJqgridMap.put("sum", sum);
 				
 				if (summaryMap.get(type) == null) {
-					summaryMap.put(type, sum);
+					summaryMap.put(type, stSum);
 				} else {
 					float summaryTotal = (float)summaryMap.get(type);
-					summaryMap.put(type, summaryTotal + sum);
+					summaryMap.put(type, summaryTotal + stSum);
 				}
 				
-				totalSum += sum;
+				totalSum += stSum;
 				resultDataForJqgridList.add(resultDataForJqgridMap);
 				
 			}
@@ -429,7 +431,60 @@ public class ManagerImpl implements IManager{
 			userMap.put(timeSheetDate, "O");
 		}
 
-		List resultDataForJqgridList = new ArrayList(usersMap.values());
+
+		
+		boolean notInputOnly = false;
+
+		String notInputOnlyStr = cond.getNotInputOnly();
+		if (notInputOnlyStr != null) {
+			if (notInputOnlyStr.equalsIgnoreCase("true")) {
+				notInputOnly = true;
+			} else {
+				notInputOnly = false;
+			}
+		}
+		
+		if (notInputOnly) {
+			//미입력만 
+			Map usersTempMap = new LinkedHashMap();
+			if (usersMap != null && !usersMap.isEmpty()) {
+				
+				Iterator itr = usersMap.keySet().iterator();
+				while(itr.hasNext()) {
+					
+					String key = (String)itr.next();
+					
+					System.out.println(key);
+					
+					Map userMap = (Map)usersMap.get(key);
+					
+					Iterator dateItr = userMap.keySet().iterator();
+					
+					boolean isNotInput = false;
+					while (dateItr.hasNext()) {
+						
+						String dateKey = (String)dateItr.next();
+						String dateValue = (String)userMap.get(dateKey);
+						
+						if (dateValue != null && dateValue.equalsIgnoreCase("X")) {
+							isNotInput = true;
+							break;
+						}
+					}
+					if (isNotInput) {
+						usersTempMap.put(key, userMap);
+					}
+				}
+			}
+			usersMap = usersTempMap;
+		} 
+		
+		
+		
+		
+		
+		List resultDataForJqgridList = resultDataForJqgridList = new ArrayList(usersMap.values());
+		
 		
 		Map returnMap = new HashMap();
 		returnMap.put("resultDatas", resultDataForJqgridList);
