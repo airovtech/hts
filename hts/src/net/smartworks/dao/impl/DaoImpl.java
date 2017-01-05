@@ -7,6 +7,7 @@
 package net.smartworks.dao.impl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.sql.DataSource;
@@ -15,9 +16,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import net.smartworks.dao.IDao;
 import net.smartworks.dao.mapper.HcTimeSheetMapper;
+import net.smartworks.dao.mapper.ProjectMapper;
 import net.smartworks.dao.mapper.UserMapper;
 import net.smartworks.model.HcTimeSheet;
 import net.smartworks.model.HcTimeSheetCond;
+import net.smartworks.model.Project;
 import net.smartworks.model.User;
 import net.smartworks.model.UserCond;
 import net.smartworks.util.DateUtil;
@@ -48,6 +51,12 @@ public class DaoImpl implements IDao {
 			
 			sql.append(" WHERE 1=1 ");
 			
+			
+			//기본적으로 퇴사자는 조회 되지 않는다.
+			sql.append(" AND ( ").append(PropertiesUtil.getInstance().getUser_UserResignColumnName()).append(" = 'f'");
+			sql.append(" OR ( ").append(PropertiesUtil.getInstance().getUser_UserResignColumnName()).append(" = 't' AND ").append(PropertiesUtil.getInstance().getUser_UserResignDateColumnName()).append(" > ").append("?").append(")").append(")");
+			setParams.add(DateUtil.convertGMTDate(new Date()));
+			
 			if (cond.getDept() != null) {
 				sql.append(" AND ").append(PropertiesUtil.getInstance().getUser_UserDeptColumnName()).append(" = ?");
 				setParams.add(cond.getDept());
@@ -56,10 +65,10 @@ public class DaoImpl implements IDao {
 				sql.append(" AND ").append(PropertiesUtil.getInstance().getUser_UserPositionColumnName()).append(" = ?");
 				setParams.add(cond.getPosition());
 			}
-			if (cond.getResign() != null) {
-				sql.append(" AND ").append(PropertiesUtil.getInstance().getUser_UserResignColumnName()).append(" = ?");
-				setParams.add(cond.getResign());
-			}
+//			if (cond.getResign() != null) {
+//				sql.append(" AND ").append(PropertiesUtil.getInstance().getUser_UserResignColumnName()).append(" = ?");
+//				setParams.add(cond.getResign());
+//			}
 			if (cond.getType() != null) {
 				sql.append(" AND ").append(PropertiesUtil.getInstance().getUser_UserTypeColumnName()).append(" = ?");
 				setParams.add(cond.getType());
@@ -117,13 +126,36 @@ public class DaoImpl implements IDao {
 	public List<String> getAllProjectNameList(String userId) throws Exception {
 
 		StringBuffer sql = new StringBuffer();
-		sql.append(" SELECT DISTINCT ").append(PropertiesUtil.getInstance().getPrj_CodeColumn()).append(" FROM ").append(PropertiesUtil.getInstance().getProjectCodeTableName());
-		sql.append(" ORDER BY ").append(PropertiesUtil.getInstance().getPrj_CodeColumn()).append(" DESC");
+		sql.append(" SELECT DISTINCT ").append(PropertiesUtil.getInstance().getPrj_DescriptionColumn()).append(" FROM ").append(PropertiesUtil.getInstance().getProjectCodeTableName());
+		sql.append(" WHERE ").append(PropertiesUtil.getInstance().getPrj_ReportColumn()).append(" = ").append("'t'");
+		sql.append(" ORDER BY ").append(PropertiesUtil.getInstance().getPrj_DescriptionColumn()).append(" DESC");
 		List<String> result = jdbcTemplateObject.queryForList(sql.toString(), String.class);
 		
 		return result;
 	}
 
+	@Override
+	public List<Project> getAllProjectListToSelect(String userId) throws Exception {
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT * FROM ").append(PropertiesUtil.getInstance().getProjectCodeTableName());
+		sql.append(" WHERE ").append(PropertiesUtil.getInstance().getPrj_ReportColumn()).append(" = ").append("'t'");
+		sql.append(" ORDER BY ").append(PropertiesUtil.getInstance().getPrj_CodeColumn()).append(" DESC , ").append(PropertiesUtil.getInstance().getPrj_DescriptionColumn()).append(" ASC");
+
+		List<Project> prjList = jdbcTemplateObject.query(sql.toString(), new ProjectMapper());
+		return prjList;
+	}
+	
+	@Override
+	public List<Project> getAllProjectList(String userId) throws Exception {
+		
+		StringBuffer sql = new StringBuffer();
+		sql.append(" SELECT * FROM ").append(PropertiesUtil.getInstance().getProjectCodeTableName());
+
+		List<Project> prjList = jdbcTemplateObject.query(sql.toString(), new ProjectMapper());
+		return prjList;
+	}
+	
 	@Override
 	public List<HcTimeSheet> getHcTimeSheet(String userId, HcTimeSheetCond cond) throws Exception {
 
@@ -168,11 +200,7 @@ public class DaoImpl implements IDao {
 		return hcTimeSheetList;
 		
 	}
-	
-	
-	
-	
-	
+
 	
 	
 	

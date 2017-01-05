@@ -71,6 +71,10 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 				return;
 			}
 			
+			Date now = new Date();
+			SimpleDateFormat sdf = new SimpleDateFormat(PropertiesUtil.getInstance().getDate_Pattern());
+			String nowStr = sdf.format(now);
+			
 			for (int i = 0; i < userList.size(); i++) {
 				
 				Map userMap = (Map)userList.get(i);
@@ -86,6 +90,12 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 					
 					//주말에는 작성하지 않아도 알림 메일이 가지 않는다. 
 					if ((week != null && !week.equalsIgnoreCase("sun") && !week.equalsIgnoreCase("sat")) && (flag == null || flag.equalsIgnoreCase("X"))) {
+						
+						//오늘에 미등록도 메일이 가지 않는다. 2016/12/26
+						if (nowStr.equals(date)) {
+							continue;
+						}
+						
 						mailTarget.add(userMap);
 						break;
 					}
@@ -269,7 +279,7 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 		String id = PropertiesUtil.getInstance().getMail_SenderId();
 		String pass = PropertiesUtil.getInstance().getMail_SenderPassword();
 		
-		to = "kmyu@smartworks.net";
+		//to = "kmyu@smartworks.net";
 		
 		sendMail(mailServerName, id, pass, from, to, subject, messageText);
 		

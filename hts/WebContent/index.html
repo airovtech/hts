@@ -72,9 +72,9 @@ function setDefaultOption() {
         	
         	$.each(prjList, function(index, value){
         		if (index == 0) {
-	        		pOption +='<option value="">Project code</option>';
+	        		pOption +='<option value="">Project</option>';
         		}
-        		pOption +='<option value="'+value+'">'+value+'</option>';
+        		pOption +='<option value="'+value.projectCode+'">'+value.description+'</option>';
         	});
 			$('#projectList').append(pOption);        	
         	
@@ -85,7 +85,7 @@ function setDefaultOption() {
         	
         	$.each(deptList, function(index, value){
         		if (index == 0) {
-	        		dOption +='<option value="">Department</option>';
+	        		dOption +='<option value="">Dept.</option>';
         		}
         		dOption +='<option value="'+value+'">'+value+'</option>';
         	});
@@ -106,7 +106,7 @@ function drawGrid(params) {
 	var gridType = params.gridType;
 	
 	if (!gridType) {
-		gridType = 'sa';
+		gridType = 'st';
 	}
 	
 	if (gridType == 'input') {
@@ -125,26 +125,35 @@ function drawGrid(params) {
         contentType : "application/json; charset=UTF-8",
         success:function(result){  
             
+        	console.log(result);
+        	
         	var columns;
         	if (gridType == 'input') {
 	        	columns = [
-	        	               {label:'사번', name:'userNo',index:'',width:40,fixed:true},
-	        	               {label:'성명', name:'name',index:'',width:60,fixed:true},
-	        	               {label:'Name', name:'engName',index:'',width:85,fixed:true},
-	        	               {label:'부서', name:'dept',index:'',width:130,fixed:true},
-	        	               {label:'구분', name:'type',index:'',width:40,fixed:true},
-	        	               {label:'직급', name:'position',index:'',width:100,fixed:true, frozen:true},
+	        	               {label:'Employee ID', name:'userNo',index:'',width:40,fixed:true},
+	        	               {label:'K-Name', name:'name',index:'',width:60,fixed:true},
+	        	               {label:'E-Name', name:'engName',index:'',width:85,fixed:true},
+	        	               {label:'Dept.', name:'dept',index:'',width:130,fixed:true},
+	        	               {label:'Type', name:'type',index:'',width:40,fixed:true},
+	        	               {label:'Title', name:'position',index:'',width:100,fixed:true, frozen:true},
 	       	               ];
         	} else {
 	        	columns = [
-	        	               {label:'사번', name:'userNo',index:'',width:40,fixed:true},
-	        	               {label:'성명', name:'name',index:'',width:60,fixed:true},
-	        	               {label:'Name', name:'engName',index:'',width:85,fixed:true},
-	        	               {label:'부서', name:'dept',index:'',width:130,fixed:true},
-	        	               {label:'프로젝트', name:'projectCode',index:'',width:60,fixed:true},
-	        	               {label:'구분', name:'type',index:'',width:40,fixed:true},
-	        	               {label:'직급', name:'position',index:'',width:100,fixed:true},
-	        	               {label:'합계', name:'sum',index:'',width:50, align:'center',fixed:true, frozen:true},
+	        	               {label:'Employee ID', name:'userNo',index:'',width:40,fixed:true},
+	        	               {label:'K-Name', name:'name',index:'',width:60,fixed:true},
+	        	               {label:'E-Name', name:'engName',index:'',width:85,fixed:true},
+	        	               {label:'Dept.', name:'dept',index:'',width:130,fixed:true},
+	        	               {label:'Type', name:'type',index:'',width:40,fixed:true},
+	        	               {label:'Title', name:'position',index:'',width:100,fixed:true},
+	        	               {label:'project', name:'project.description',index:'',width:100,fixed:true},
+	        	               {label:'project code', name:'projectCode',index:'',width:70,fixed:true},
+	        	               {label:'PM', name:'project.pm',index:'',width:60,fixed:true},
+	        	               {label:'Sales', name:'project.sales',index:'',width:60,fixed:true},
+	        	               {label:'Customer', name:'project.customer',index:'',width:60,fixed:true},
+	        	               {label:'ProductType', name:'project.productType',index:'',width:80,fixed:true},
+	        	               {label:'SOP', name:'project.sop',index:'',width:60,fixed:true},
+	        	               {label:'SOD', name:'project.devStart',index:'',width:60,fixed:true},
+	        	               {label:'Total', name:'sum',index:'',width:50, align:'center',fixed:true, frozen:true},
 	       	               ];
         	}
         	
@@ -199,7 +208,7 @@ function drawGrid(params) {
 		        	               {label:'E/S', name:'E/S',index:'',width:50, align:'center', formatter:defaultValue},
 		        	               {label:'MGT', name:'MGT',index:'',width:50, align:'center', formatter:defaultValue},
 		        	               {label:'PM', name:'PM',index:'',width:50, align:'center', formatter:defaultValue},
-		        	               {label:'합계', name:'totalSum',index:'',width:50, align:'center', formatter:defaultValue},
+		        	               {label:'Total', name:'totalSum',index:'',width:50, align:'center', formatter:defaultValue},
 	        	                 ]
 	        	if (gridType != 'ot') {
 	        		colModels.push({label:'H/C', name:'hc',index:'',width:50, align:'center', formatter:defaultValue});
@@ -240,6 +249,11 @@ function drawGrid(params) {
 				    $('td[title=X]').css('color','red')
                 }
             });
+			
+			
+			$("#fromDate").datepicker('setDate', returnColumn[0].date);
+			$("#toDate").datepicker('setDate', returnColumn[returnColumn.length-1].date);
+			
 			
         },   
         error:function(e){  
@@ -330,15 +344,21 @@ $(document).ready(function () {
 		
 	});
 	
+	
 	$(function() {
 		$("#fromDate, #toDate").datepicker({
 			beforeShow: function() {
 		        setTimeout(function(){
 		            $('.ui-datepicker').css('z-index', 100);
 		        }, 0)
-		    }		
+		    }
 		});
-	});
+		
+		//$("#fromDate").datepicker('setDate', '2016/12/01');
+		//$("#toDate").datepicker('setDate', '2016/12/01');
+	}); 
+
+	
 	
 	$("input[name=chk_info] , #projectList , #deptList , #notInputOnly").change(function() {
 		refreshGrid()
@@ -358,6 +378,8 @@ $(document).ready(function () {
 		console.log('start');
 		var gridDate = $('#timeSheet').getRowData();
 		var columnNames = $("#timeSheet").jqGrid('getGridParam','colNames');
+		
+		console.log(gridDate);
 		
 		var resultSummaryData = $("#timeSheetSummary").getRowData();
 		var resultSummaryColumnData = $("#timeSheetSummary").jqGrid('getGridParam','colNames');

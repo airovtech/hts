@@ -19,6 +19,7 @@ import net.smartworks.factory.DaoFactory;
 import net.smartworks.manager.IManager;
 import net.smartworks.model.HcTimeSheet;
 import net.smartworks.model.HcTimeSheetCond;
+import net.smartworks.model.Project;
 import net.smartworks.model.User;
 import net.smartworks.model.UserCond;
 import net.smartworks.util.DateUtil;
@@ -55,7 +56,16 @@ public class ManagerImpl implements IManager{
 		List<String> result = DaoFactory.getInstance().getDao().getAllProjectNameList(userId);
 		return result;
 	}
-
+	
+	public List<Project> getAllProjectList(String userId) throws Exception {
+		List<Project> result = DaoFactory.getInstance().getDao().getAllProjectList(userId);
+		return result;
+	}
+	public List<Project> getAllProjectListToSelect(String userId) throws Exception {
+		List<Project> result = DaoFactory.getInstance().getDao().getAllProjectListToSelect(userId);
+		return result;
+	}
+	
 	@Override
 	public Map getHcTimeSheetJsonDatasForJqgrid(String userId, HcTimeSheetCond cond) throws Exception {
 
@@ -77,6 +87,12 @@ public class ManagerImpl implements IManager{
 			Date toDay = new Date();
 			cond.setWorkDateFrom(DateUtil.getFirstDayOfWeek(toDay));	
 			cond.setWorkDateTo(DateUtil.getLastDayOfWeek(toDay));	
+		} else {
+			
+			if (toDate.getTime() < fromDate.getTime()) {
+				return null;
+			}
+			
 		}
 
 		//검색 범위의 모든 날짜들을 조회 한다 
@@ -86,6 +102,17 @@ public class ManagerImpl implements IManager{
 		
 		//Time sheet
 		List<HcTimeSheet> timeSheetList = DaoFactory.getInstance().getDao().getHcTimeSheet(userId, cond);
+		
+		
+		
+		
+		
+		List<Project> prjList = getAllProjectList(userId);
+		
+		
+		
+		
+		
 		
 		
 		//사용자별로 데이터를 취합하기 위한 맵
@@ -204,7 +231,7 @@ public class ManagerImpl implements IManager{
 		
 		
 		float totalSum = 0;
-		Map summaryMap = new HashMap();
+		Map<String, Float> summaryMap = new HashMap<String, Float>();
 		
 		for (int i = 0; i < resultDataList.size(); i++) {
 			
@@ -243,6 +270,18 @@ public class ManagerImpl implements IManager{
 				resultDataForJqgridMap.put("type", type);
 				
 				resultDataForJqgridMap.put("projectCode", projectCode);
+				
+				
+				
+				if (prjList != null && prjList.size() != 0) {
+					for (int k = 0; k < prjList.size(); k++) {
+						Project projectObj = prjList.get(k);
+						if (projectCode.equalsIgnoreCase(projectObj.getProjectCode())) {
+							resultDataForJqgridMap.put("project", projectObj);
+							break;
+						}
+					}
+				}
 				
 				float sum = 0; 
 				float stSum = 0;
@@ -284,7 +323,21 @@ public class ManagerImpl implements IManager{
 				if (summaryMap.get(type) == null) {
 					summaryMap.put(type, stSum);
 				} else {
+					
+					
+					
+					
+					
+					
+					
 					float summaryTotal = (float)summaryMap.get(type);
+					
+					
+					
+					
+					
+					
+					
 					summaryMap.put(type, summaryTotal + stSum);
 				}
 				
@@ -502,7 +555,8 @@ public class ManagerImpl implements IManager{
 		List deptList = getAllDeptNameList(userId);
 		returnMap.put("deptList", deptList);	
 
-		List projectList = getAllProjectNameList(userId);
+		//List projectList = getAllProjectNameList(userId);
+		List projectList = getAllProjectListToSelect(userId);
 		returnMap.put("projectList", projectList);	
 		
 		return returnMap;

@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import net.smartworks.model.HcTimeSheetCond;
+import net.smartworks.model.Project;
 import net.smartworks.model.User;
 import net.smartworks.model.UserCond;
 
@@ -25,6 +26,7 @@ public interface IManager {
 	public List<String> getAllUserTypeList(String userId) throws Exception;
 	
 	public List<String> getAllProjectNameList(String userId) throws Exception;
+	public List<Project> getAllProjectListToSelect(String userId) throws Exception;
 	
 	public Map getHcTimeSheetJsonDatasForJqgrid(String userId, HcTimeSheetCond cond) throws Exception;
 	//public Map getHcTimeSheetJsonDatas(String userId, HcTimeSheetCond cond) throws Exception;

@@ -138,8 +138,26 @@
 		<property name="prj_PmColumn">
 			<value>${prj_PmColumn}</value>
 		</property>
+		<property name="prj_DescriptionColumn">
+			<value>${prj_DescriptionColumn}</value>
+		</property>
 		<property name="prj_SalesColumn">
 			<value>${prj_SalesColumn}</value>
+		</property>
+		<property name="prj_CustomerColumn">
+			<value>${prj_CustomerColumn}</value>
+		</property>
+		<property name="prj_ProductTypeColumn">
+			<value>${prj_ProductTypeColumn}</value>
+		</property>
+		<property name="prj_DevStartColumn">
+			<value>${prj_DevStartColumn}</value>
+		</property>
+		<property name="prj_SopColumn">
+			<value>${prj_SopColumn}</value>
+		</property>
+		<property name="prj_ReportColumn">
+			<value>${prj_ReportColumn}</value>
 		</property>
 		<property name="date_Pattern">
 			<value>${date_Pattern}</value>

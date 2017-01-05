@@ -39,7 +39,7 @@ public class DateUtil {
 		
 		long time = localeDate.getTime();
 		
-		//9시간을 더한다 
+		//9시간을 뺀 
 		time -= 32400000;
 
 		localeDate.setTime(time);

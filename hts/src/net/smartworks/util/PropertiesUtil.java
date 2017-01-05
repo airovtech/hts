@@ -67,7 +67,13 @@ public class PropertiesUtil {
 	private String prj_CodeColumn;
 	private String prj_PmColumn;
 	private String prj_SalesColumn;
-
+	private String prj_DescriptionColumn;
+	private String prj_CustomerColumn;
+	private String prj_ProductTypeColumn;
+	private String prj_DevStartColumn;
+	private String prj_SopColumn;
+	private String prj_ReportColumn;
+	
 	
 	//etc
 	private String date_Pattern;
@@ -252,6 +258,43 @@ public class PropertiesUtil {
 	}
 	public void setPrj_SalesColumn(String prj_SalesColumn) {
 		this.prj_SalesColumn = prj_SalesColumn;
+	}
+	public String getPrj_CustomerColumn() {
+		return prj_CustomerColumn;
+	}
+	public void setPrj_CustomerColumn(String prj_CustomerColumn) {
+		this.prj_CustomerColumn = prj_CustomerColumn;
+	}
+	public String getPrj_ProductTypeColumn() {
+		return prj_ProductTypeColumn;
+	}
+	public void setPrj_ProductTypeColumn(String prj_ProductTypeColumn) {
+		this.prj_ProductTypeColumn = prj_ProductTypeColumn;
+	}
+	public String getPrj_DevStartColumn() {
+		return prj_DevStartColumn;
+	}
+	public void setPrj_DevStartColumn(String prj_DevStartColumn) {
+		this.prj_DevStartColumn = prj_DevStartColumn;
+	}
+	public String getPrj_SopColumn() {
+		return prj_SopColumn;
+	}
+	public void setPrj_SopColumn(String prj_SopColumn) {
+		this.prj_SopColumn = prj_SopColumn;
+	}
+
+	public String getPrj_DescriptionColumn() {
+		return prj_DescriptionColumn;
+	}
+	public void setPrj_DescriptionColumn(String prj_DescriptionColumn) {
+		this.prj_DescriptionColumn = prj_DescriptionColumn;
+	}
+	public String getPrj_ReportColumn() {
+		return prj_ReportColumn;
+	}
+	public void setPrj_ReportColumn(String prj_ReportColumn) {
+		this.prj_ReportColumn = prj_ReportColumn;
 	}
 	public String getDate_Pattern() {
 		return date_Pattern;

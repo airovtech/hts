@@ -65,23 +65,38 @@ public class ExcelView extends AbstractExcelView {
             for (int j = 0; j < resultColumnDataList.size(); j++) {
         		String name = resultColumnDataList.get(j);
         		
-        		if (name != null && name.equalsIgnoreCase("사번")) {
+        		if (name != null && name.equalsIgnoreCase("Employee ID")) {
         			name = "userNo";
-        		} else if (name != null && name.equalsIgnoreCase("성명")) {
+        		} else if (name != null && name.equalsIgnoreCase("K-Name")) {
         			name = "name";
-        		} else if (name != null && name.equalsIgnoreCase("Name")) {
+        		} else if (name != null && name.equalsIgnoreCase("E-Name")) {
         			name = "engName";
-        		} else if (name != null && name.equalsIgnoreCase("부서")) {
+        		} else if (name != null && name.equalsIgnoreCase("Dept.")) {
         			name = "dept";
-        		} else if (name != null && name.equalsIgnoreCase("프로젝트")) {
-        			name = "projectCode";
-        		} else if (name != null && name.equalsIgnoreCase("구분")) {
+        		} else if (name != null && name.equalsIgnoreCase("Type")) {
         			name = "type";
-        		} else if (name != null && name.equalsIgnoreCase("직급")) {
+        		} else if (name != null && name.equalsIgnoreCase("Title")) {
         			name = "position";
-        		} else if (name != null && name.equalsIgnoreCase("합계")) {
-        			name = "sum";
-        		}
+        		} else if (name != null && name.equalsIgnoreCase("project")) {
+        			name = "project.description";
+        		} else if (name != null && name.equalsIgnoreCase("project code")) {
+         			name = "projectCode";
+         		} else if (name != null && name.equalsIgnoreCase("PM")) {
+         			name = "project.pm";
+         		} else if (name != null && name.equalsIgnoreCase("Sales")) {
+         			name = "project.sales";
+         		} else if (name != null && name.equalsIgnoreCase("Customer")) {
+         			name = "project.customer";
+         		} else if (name != null && name.equalsIgnoreCase("ProductType")) {
+         			name = "project.productType";
+         		} else if (name != null && name.equalsIgnoreCase("SOP")) {
+         			name = "project.sop";
+         		} else if (name != null && name.equalsIgnoreCase("SOD")) {
+         			name = "project.devStart";
+         		} else if (name != null && name.equalsIgnoreCase("Total")) {
+         			name = "sum";
+         		}
+        		
         		
         		String value = (String)resultMap.get(name);
 
@@ -104,7 +119,7 @@ public class ExcelView extends AbstractExcelView {
                 for (int j = 0; j < resultSummaryColumnDataList.size(); j++) {
             		String name = resultSummaryColumnDataList.get(j);
             		
-            		if (name != null && name.equalsIgnoreCase("합계")) {
+            		if (name != null && name.equalsIgnoreCase("Total")) {
             			name = "totalSum";
             		} else if (name != null && name.equalsIgnoreCase("H/C")) {
             			name = "hc";
