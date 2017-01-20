@@ -15,7 +15,10 @@
 	WebApplicationContext wac = WebApplicationContextUtils.getRequiredWebApplicationContext(servletContext);
 	PropertiesUtil util = (PropertiesUtil)wac.getBean("propertiesUtil");	
 
-	util.setMail_TargetDomainAddress("@daum.net");
+	util.setMail_TargetDomainAddressLock("true");
+	util.setMail_TargetDomainAddress("@smartworks.net");
+	
+	out.println("Done");
 %>
 </body>
 </html>

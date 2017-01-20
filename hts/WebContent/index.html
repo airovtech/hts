@@ -145,8 +145,8 @@ function drawGrid(params) {
 	        	               {label:'Dept.', name:'dept',index:'',width:130,fixed:true},
 	        	               {label:'Type', name:'type',index:'',width:40,fixed:true},
 	        	               {label:'Title', name:'position',index:'',width:100,fixed:true},
-	        	               {label:'project', name:'project.description',index:'',width:100,fixed:true},
-	        	               {label:'project code', name:'projectCode',index:'',width:70,fixed:true},
+	        	               {label:'Project', name:'project.description',index:'',width:100,fixed:true},
+	        	               {label:'Project code', name:'projectCode',index:'',width:70,fixed:true},
 	        	               {label:'PM', name:'project.pm',index:'',width:60,fixed:true},
 	        	               {label:'Sales', name:'project.sales',index:'',width:60,fixed:true},
 	        	               {label:'Customer', name:'project.customer',index:'',width:60,fixed:true},
@@ -213,6 +213,21 @@ function drawGrid(params) {
 	        	if (gridType != 'ot') {
 	        		colModels.push({label:'H/C', name:'hc',index:'',width:50, align:'center', formatter:defaultValue});
 	        	}  
+	        	
+	        	console.log(summary);
+	        	
+	        	var summaryTotalHc = result.summaryTotalHc[0];
+	        	for (var key in summaryTotalHc){
+	        		
+	        		if ((summary[0])[key]) {
+	        			(summary[0])[key] = (summary[0])[key] + ' / ('+summaryTotalHc[key]+')'
+	        		} else {
+	        			(summary[0])[key] = '0 / ('+summaryTotalHc[key]+')'
+	        		}
+	        	}
+	        	(summary[0]).totalSum = (summary[0]).totalSum + ' / ('+summaryTotalHc.totalWorkingHcSum+')';  
+	        	
+	        	(summary[0]).hc = (summary[0]).hc + ' / (' + (Number(summaryTotalHc.totalWorkingHcSum) / 8) + ')'  ;
 	        	
 	        	$("#timeSheetSummary").jqGrid({
 	                data: summary,

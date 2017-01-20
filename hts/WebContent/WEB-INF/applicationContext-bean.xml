@@ -162,6 +162,9 @@
 		<property name="date_Pattern">
 			<value>${date_Pattern}</value>
 		</property>
+		<property name="mail_log_folder">
+			<value>${mail_log_folder}</value>
+		</property>
 		
 	</bean>
 </beans>

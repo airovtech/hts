@@ -40,6 +40,7 @@ import net.smartworks.model.HcTimeSheetCond;
 import net.smartworks.model.Property;
 import net.smartworks.model.User;
 import net.smartworks.model.UserCond;
+import net.smartworks.util.LogUtil;
 import net.smartworks.util.PropertiesUtil;
 import net.smartworks.util.ServletUtil;
 
@@ -117,6 +118,7 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 				System.out.println("PERSON MAIL SENDING...." + toUser);
 				SendMailTask mailTask = new SendMailTask(toUser , targetUserMapList, HcTimeSheetWatcherJob.PERSON, dateList);
 				mailTask.start();
+				Thread.sleep(10000);
 			}
 			
 			///////////////////////// 팀장 메일 발송 /////////////////////////////
@@ -177,11 +179,14 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 					System.out.println("TEAM LEADER MAIL SENDING...." + teamLeader);
 					SendMailTask mailTask = new SendMailTask(teamLeader , teamUserList, HcTimeSheetWatcherJob.LEADER, dateList);
 					mailTask.start();
+					Thread.sleep(10000);
 				}
 			}
 			
+			
 		} catch (Exception e) {
 			e.printStackTrace();
+			LogUtil.makeFileFromException(e , "HcTimeSheetWatcherJob executeInternal", "");
 		}
 	}
 	
@@ -205,12 +210,13 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 			this.columnList = columnList;
 		}
 		public void run() {
+			String to = null;
 			try {
 				
 				Date today = new Date();
 				SimpleDateFormat sdf = new SimpleDateFormat(PropertiesUtil.getInstance().getDate_Pattern());
 				
-				String to = toUserAddress;
+				to = toUserAddress;
 				if (to == null)
 					return;
 				String from = PropertiesUtil.getInstance().getMail_SenderId();
@@ -236,21 +242,23 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				LogUtil.makeFileFromException(e , "HcTimeSheetWatcherJob run", to);
 			}
 			
 		}
 		public String toMailContent(List<Map> userMapList , String target , List columnList) throws Exception {
 			
 			String content = "";
-			
-			if (userMapList == null || userMapList.size() == 0) {
-				return null;
-			}
-			
-			String paramString = JSONArray.fromObject(userMapList).toString();
-			String returnColumnString = JSONArray.fromObject(columnList).toString();
-			
+			String paramString = null;
 			try {
+				
+				if (userMapList == null || userMapList.size() == 0) {
+					return null;
+				}
+				
+				paramString = JSONArray.fromObject(userMapList).toString();
+				String returnColumnString = JSONArray.fromObject(columnList).toString();
+			
 				List paramList = new ArrayList();
 				if (paramString != null)
 					paramList.add(new Property("paramString", paramString));
@@ -269,6 +277,7 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
+				LogUtil.makeFileFromException(e , "HcTimeSheetWatcherJob toMailContent target_param : "+target+"_"+paramString, target);
 			}
 			return content;
 		}
@@ -309,6 +318,7 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 			mailProps.put("mail.smtp.socketFactory.port", "465");
 			mailProps.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
 			mailProps.put("mail.smtp.socketFactory.fallback", "false");
+			mailProps.put("mail.smtp.startls.enable", "true");
 		}
 		Session mailSession = Session.getInstance(mailProps, auth);
 
@@ -323,13 +333,21 @@ public class HcTimeSheetWatcherJob  extends QuartzJobBean   {
 //		message.setContent(messageText.toString(), "text/html; charset=euc-kr");
 		
 		try {
+			
 			Transport.send(message);
 			
 			System.out.println("SendMail Completed to "+ to);
 			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			Date now = new Date();
+			String nowStr = sdf.format(now);
+			
+			LogUtil.makeLogFile(to+"_"+nowStr+"_"+new Date().getTime(), "SendMail Completed to "+ to);
+			
 		} catch(Exception ex) {
 			ex.printStackTrace();
-			throw new MessagingException(ex.getMessage());
+			LogUtil.makeFileFromException(ex , "HcTimeSheetWatcherJob sendMail to : "+to + "\n" + messageText.toString() , to);
+			//throw new MessagingException(ex.getMessage());
 		}
 	}
 }

@@ -111,6 +111,19 @@ public class DaoImpl implements IDao {
 	}
 
 	@Override
+	public List<String> getTotalCountGroupByType(String userId) throws Exception {
+
+		StringBuffer sql = new StringBuffer();
+		
+		sql.append(" SELECT ").append(PropertiesUtil.getInstance().getUser_UserTypeColumnName()).append(" ||'||'|| COUNT(").append(PropertiesUtil.getInstance().getUser_UserTypeColumnName()).append(") AS CNT FROM ");
+		sql.append(PropertiesUtil.getInstance().getUserTableName()).append(" GROUP BY ").append(PropertiesUtil.getInstance().getUser_UserTypeColumnName());
+		
+		List<String> result = jdbcTemplateObject.queryForList(sql.toString(), String.class);
+		
+		return result;
+	}
+	
+	@Override
 	public List<String> getAllUserTypeList(String userId) throws Exception {
 
 		StringBuffer sql = new StringBuffer();

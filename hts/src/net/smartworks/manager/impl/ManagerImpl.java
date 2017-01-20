@@ -15,6 +15,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.poi.util.StringUtil;
+import org.springframework.util.StringUtils;
+
 import net.smartworks.factory.DaoFactory;
 import net.smartworks.manager.IManager;
 import net.smartworks.model.HcTimeSheet;
@@ -88,32 +91,19 @@ public class ManagerImpl implements IManager{
 			cond.setWorkDateFrom(DateUtil.getFirstDayOfWeek(toDay));	
 			cond.setWorkDateTo(DateUtil.getLastDayOfWeek(toDay));	
 		} else {
-			
 			if (toDate.getTime() < fromDate.getTime()) {
 				return null;
 			}
-			
 		}
 
 		//검색 범위의 모든 날짜들을 조회 한다 
 		//Time sheet 를 작성하지 않은날도 표시가 되어야 한다.
 		List<Map<String, String>> dateList = DateUtil.getDateStringListByFromTo(pattern, cond.getWorkDateFrom(), cond.getWorkDateTo());
 		
-		
 		//Time sheet
 		List<HcTimeSheet> timeSheetList = DaoFactory.getInstance().getDao().getHcTimeSheet(userId, cond);
 		
-		
-		
-		
-		
 		List<Project> prjList = getAllProjectList(userId);
-		
-		
-		
-		
-		
-		
 		
 		//사용자별로 데이터를 취합하기 위한 맵
 		Map<String, Map> userNameMap = new LinkedHashMap<String, Map>();
@@ -229,7 +219,6 @@ public class ManagerImpl implements IManager{
 		
 		List resultDataForJqgridList = new ArrayList();
 		
-		
 		float totalSum = 0;
 		Map<String, Float> summaryMap = new HashMap<String, Float>();
 		
@@ -243,7 +232,6 @@ public class ManagerImpl implements IManager{
 			String position = (String)userMap.get("position");
 			String dept = (String)userMap.get("dept");
 			String type = (String)userMap.get("type");
-
 			
 			List projectList = (List)userMap.get("projectDataList");
 			
@@ -259,7 +247,6 @@ public class ManagerImpl implements IManager{
 				//String sum = (String)projectMap.get("sum");
 				List prjDateList = (List)projectMap.get("dateDataList");
 				
-				
 				Map resultDataForJqgridMap = new LinkedHashMap();
 
 				resultDataForJqgridMap.put("userNo", userNo);
@@ -270,8 +257,6 @@ public class ManagerImpl implements IManager{
 				resultDataForJqgridMap.put("type", type);
 				
 				resultDataForJqgridMap.put("projectCode", projectCode);
-				
-				
 				
 				if (prjList != null && prjList.size() != 0) {
 					for (int k = 0; k < prjList.size(); k++) {
@@ -293,7 +278,6 @@ public class ManagerImpl implements IManager{
 					String st = prjDateMap.get("st")+"";
 					String ot = prjDateMap.get("ot")+"";
 					String week = (String)prjDateMap.get("week");
-					
 					
 					String value = null;
 					
@@ -323,21 +307,7 @@ public class ManagerImpl implements IManager{
 				if (summaryMap.get(type) == null) {
 					summaryMap.put(type, stSum);
 				} else {
-					
-					
-					
-					
-					
-					
-					
 					float summaryTotal = (float)summaryMap.get(type);
-					
-					
-					
-					
-					
-					
-					
 					summaryMap.put(type, summaryTotal + stSum);
 				}
 				
@@ -346,6 +316,54 @@ public class ManagerImpl implements IManager{
 				
 			}
 		}
+
+		
+		
+		
+		//summary의 기본 값을 채운다. 정상적으로 모든 인원이 입력했을경우의 데이터를 비교값으로 넣어준다 
+		List<String> valueList = DaoFactory.getInstance().getDao().getTotalCountGroupByType(userId);
+		
+		int workingDateCount = 0;
+		
+		Date now = new Date();
+		String nowStr = sdf.format(now);
+		
+		for (int j = 0; j < dateList.size(); j++) {
+			Map dateListMap = dateList.get(j);
+			String dateString = (String)dateListMap.get("date");
+			String weekString = (String)dateListMap.get("week");
+			
+			if (weekString.equalsIgnoreCase("sun") || weekString.equalsIgnoreCase("sat")){
+				continue;
+			}
+			
+			workingDateCount += 1;
+			if (nowStr.equalsIgnoreCase(dateString)) {
+				break;
+			}
+		}
+		Map summaryWorkingDateTotalHcMap = new HashMap();
+		int totalWorkingHcSum = 0;
+		for (int i = 0; i < valueList.size(); i++) {
+			
+			String valueStr = valueList.get(i);
+			//valueStr   =  type||count
+			String[] valueArray = StringUtils.tokenizeToStringArray(valueStr, "||");
+			String type = valueArray[0];
+			String count = valueArray[1];
+			
+			//사용자가 선택한 날짜 갯수
+			int totalWorkingHC = Integer.parseInt(count) * 8 * workingDateCount;
+			
+			summaryWorkingDateTotalHcMap.put(type , totalWorkingHC);
+			
+			totalWorkingHcSum += totalWorkingHC;
+			
+		}
+		summaryWorkingDateTotalHcMap.put("totalWorkingHcSum" , totalWorkingHcSum);
+		
+		
+		
 		
 		Map returnMap = new HashMap();
 		returnMap.put("resultDatas", resultDataForJqgridList);
@@ -354,6 +372,9 @@ public class ManagerImpl implements IManager{
 		List summaryList = new ArrayList();
 		summaryList.add(summaryMap);
 		returnMap.put("summary", summaryList);
+		List summaryWorkingDateTotalHcList = new ArrayList();
+		summaryWorkingDateTotalHcList.add(summaryWorkingDateTotalHcMap);
+		returnMap.put("summaryTotalHc", summaryWorkingDateTotalHcList);
 		
 		String caption = "Standard Time";
 		if (gridType != null && gridType.equals("ot")) {
@@ -371,6 +392,9 @@ public class ManagerImpl implements IManager{
 
 		String pattern = PropertiesUtil.getInstance().getDate_Pattern();
 		SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+		
+		Date now = new Date();
+		String nowStr = sdf.format(now);
 		
 		//기본으로 조회하는 주 
 		Date fromDate = cond.getWorkDateFrom();
@@ -402,7 +426,6 @@ public class ManagerImpl implements IManager{
 		if (userList ==  null || userList.size() == 0) {
 			return null;
 		}
-
 		
 		Map usersMap = new LinkedHashMap();
 		//사용자 정보를 바탕으로 jqGrid 에 넘길 기본데이터를 만든다.
@@ -449,7 +472,7 @@ public class ManagerImpl implements IManager{
 				String dateString = (String)dateListMap.get("date");
 				String weekString = (String)dateListMap.get("week");
 				String isFuture = (String)dateListMap.get("isFuture");
-				if (weekString != null && (weekString.equalsIgnoreCase("sun") || weekString.equalsIgnoreCase("sat"))) {
+				if (nowStr.equalsIgnoreCase(dateString)||(weekString != null && (weekString.equalsIgnoreCase("sun") || weekString.equalsIgnoreCase("sat")))) {
 					userMap.put(dateString, "");
 				} else {
 					if (isFuture != null && isFuture.equalsIgnoreCase("true")) {
@@ -462,7 +485,6 @@ public class ManagerImpl implements IManager{
 			
 			usersMap.put(userNo, userMap);
 		}
-		
 		
 		//cond 의 정보를 이용하여 HcTimeSheet 를 가져온다.
 		//Time sheet
@@ -483,8 +505,6 @@ public class ManagerImpl implements IManager{
 			}
 			userMap.put(timeSheetDate, "O");
 		}
-
-
 		
 		boolean notInputOnly = false;
 
@@ -532,12 +552,7 @@ public class ManagerImpl implements IManager{
 			usersMap = usersTempMap;
 		} 
 		
-		
-		
-		
-		
 		List resultDataForJqgridList = resultDataForJqgridList = new ArrayList(usersMap.values());
-		
 		
 		Map returnMap = new HashMap();
 		returnMap.put("resultDatas", resultDataForJqgridList);
@@ -561,7 +576,6 @@ public class ManagerImpl implements IManager{
 		
 		return returnMap;
 	}
-	
 	
 	
 //	//time sheet 결과를 json object 형식으로 리턴한다.

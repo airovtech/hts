@@ -18,7 +18,7 @@
 			<ref bean="hcTimeSheetWatcherJob" />
 		</property>
 		<property name="cronExpression">
-			<value>0 0 8 * * ?</value>
+			<value>0 0 7 * * ?</value>
 			<!-- <value>0 * * * * ?</value> -->
 		</property>
 	</bean> 
@@ -38,5 +38,5 @@
                 <prop key="org.quartz.jobStore.misfireThreshold">60000</prop>
             </props>
         </property>
-    </bean> 
+    </bean>
 </beans>

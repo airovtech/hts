@@ -74,15 +74,15 @@
  
 	<table class="timeSheet" style="border:1px solid #B8B8B8;border-collapse:collapse;width:95%;">
 		<tr style="height:25px;">
-			<td colspan="<%=totalColumnSize %>" class="caption" style="border:1px solid #B8B8B8;background-color:#E4E4E4;">Hc TIME SHEET - USER</td>
+			<td colspan="<%=totalColumnSize %>" class="caption" style="border:1px solid #B8B8B8;background-color:#E4E4E4;">HC TIME SHEET - USER</td>
 		</tr>
 		<tr style="height:25px;">
-			<th style="border:1px solid #B8B8B8;font-weight:normal;">사번</th>
-			<th style="border:1px solid #B8B8B8;font-weight:normal;">이름</th>
-			<th style="border:1px solid #B8B8B8;font-weight:normal;">Name</th>
-			<th style="border:1px solid #B8B8B8;font-weight:normal;">부서</th>
-			<th style="border:1px solid #B8B8B8;font-weight:normal;">구분</th>
-			<th style="border:1px solid #B8B8B8;font-weight:normal;">직급</th>
+			<th style="border:1px solid #B8B8B8;font-weight:normal;">Employee ID</th>
+			<th style="border:1px solid #B8B8B8;font-weight:normal;">K-Name</th>
+			<th style="border:1px solid #B8B8B8;font-weight:normal;">E-Name</th>
+			<th style="border:1px solid #B8B8B8;font-weight:normal;">Dept.</th>
+			<th style="border:1px solid #B8B8B8;font-weight:normal;">Type</th>
+			<th style="border:1px solid #B8B8B8;font-weight:normal;">Title</th>
 <%
 	for (int i = 0; i < columnMapList.size(); i++) {
 		Map colMap = (Map)columnMapList.get(i);

@@ -29,6 +29,8 @@ public class PropertiesUtil {
 	private String mail_TargetDomainAddressLock;
 	private String mail_TargetDomainAddress;
 
+	private String mail_log_folder;
+
 
 	//Time Sheet
 	private String timeSheetTableName;
@@ -337,6 +339,12 @@ public class PropertiesUtil {
 	}
 	public void setUser_UserTeamLeaderColumnName(String user_UserTeamLeaderColumnName) {
 		this.user_UserTeamLeaderColumnName = user_UserTeamLeaderColumnName;
+	}
+	public String getMail_log_folder() {
+		return mail_log_folder;
+	}
+	public void setMail_log_folder(String mail_log_folder) {
+		this.mail_log_folder = mail_log_folder;
 	}
 
 }

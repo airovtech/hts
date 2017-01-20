@@ -18,6 +18,8 @@ public interface IDao {
 
 	public List<User> getUsers(String userId, UserCond cond) throws Exception;
 	public User getUser(String userId, String targetUserId) throws Exception;
+
+	public List<String> getTotalCountGroupByType(String userId) throws Exception;
 	
 	public List<String> getAllDeptNameList(String userId) throws Exception;
 	public List<String> getAllUserTypeList(String userId) throws Exception;
